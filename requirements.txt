@@ -1,0 +1,17 @@
+# Framework Web (API)
+fastapi
+uvicorn   # Servidor para rodar o FastAPI
+python-multipart     # Necessário para lidar com formulários/uploads se houver
+
+# Inteligência Artificial (Gemini)
+google-generativeai
+
+# Banco de Dados
+sqlalchemy
+psycopg2-binary # Driver para PostgreSQL
+# aiosqlite            # Opcional: Se formos começar com SQLite
+
+# Utilitários
+python-dotenv # Para ler o arquivo .env
+pydantic        # Para validação de dados (Fundamental com IA)
+requests       # Para fazer chamadas HTTP externas
