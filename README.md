@@ -1,10 +1,4 @@
-Com certeza! Começar pela documentação e estruturação do ambiente é o que diferencia um "scriptzinho" de um **Software de Verdade**. Sem isso, o projeto cresce desordenado e fica impossível de dar manutenção depois.
 
-E sobre usar a **IA do Gemini**: É uma excelente escolha. O modelo **Gemini 1.5 Flash**, por exemplo, é extremamente rápido, barato (tem tier gratuito generoso) e possui uma janela de contexto enorme, o que é perfeito para carregar o histórico da conversa e o cardápio inteiro sem "alucinar".
-
-Vamos estruturar a base do **"BurgerBot AI"**.
-
----
 
 ### 1. Documentação Técnica Inicial
 
