@@ -3,8 +3,9 @@ fastapi
 uvicorn   # Servidor para rodar o FastAPI
 python-multipart     # Necessário para lidar com formulários/uploads se houver
 
-# Inteligência Artificial (Gemini)
-google-generativeai
+# Inteligência Artificial
+openai
+twilio
 
 # Banco de Dados
 sqlalchemy

@@ -36,16 +36,6 @@ class Pedido(Base):
 
     itens: Mapped[List["ItemPedido"]] = relationship(back_populates="pedido", cascade="all, delete-orphan")
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    cliente_nome: Mapped[str] = mapped_column(String(100), nullable=True)
-    cliente_telefone: Mapped[str] = mapped_column(String(20))
-    status: Mapped[str] = mapped_column(String(20), default="recebido") # recebido, preparando, entregue
-    data_criacao: Mapped[datetime] = mapped_column(default=datetime.now)
-    total: Mapped[float] = mapped_column(Float, default=0.0)
-
-    # Relacionamento com itens
-    itens: Mapped[List["ItemPedido"]] = relationship(back_populates="pedido", cascade="all, delete-orphan")
-
 class ItemPedido(Base):
     __tablename__ = "itens_pedido"
 

@@ -5,7 +5,8 @@ from src.tools import listar_cardapio, finalizar_pedido, ItemPedidoInput
 
 class BurgerBrain:
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.client = OpenAI(api_key=self.api_key) if self.api_key else None
         # Melhoria futura: Trocar esse dicionário por Banco de Dados (Redis/Postgres)
         self.historico = {} 
         self.system_prompt = """
@@ -59,6 +60,9 @@ class BurgerBrain:
         ]
 
     def processar_mensagem(self, numero_cliente: str, mensagem_usuario: str) -> str:
+        if not self.client:
+            return ("⚠️ Configuração incompleta: defina a variável OPENAI_API_KEY "
+                    "no arquivo .env para ativar o atendimento automatizado.")
         # 1. Inicia histórico se não existir
         if numero_cliente not in self.historico:
             self.historico[numero_cliente] = [{"role": "system", "content": self.system_prompt}]
