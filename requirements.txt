@@ -5,6 +5,7 @@ python-multipart     # Necessário para lidar com formulários/uploads se houver
 
 # Inteligência Artificial
 openai
+google-generativeai
 twilio
 
 # Banco de Dados

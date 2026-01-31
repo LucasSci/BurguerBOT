@@ -1,12 +1,20 @@
 import os
 import json
+from dotenv import load_dotenv
 from openai import OpenAI
+import google.generativeai as genai
 from src.tools import listar_cardapio, finalizar_pedido, ItemPedidoInput
 
 class BurgerBrain:
     def __init__(self):
+        load_dotenv()
         self.api_key = os.getenv("OPENAI_API_KEY")
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
         self.client = OpenAI(api_key=self.api_key) if self.api_key else None
+        self.gemini_model = None
+        if not self.client and self.gemini_api_key:
+            genai.configure(api_key=self.gemini_api_key)
+            self.gemini_model = genai.GenerativeModel("gemini-1.5-flash")
         # Melhoria futura: Trocar esse dicionário por Banco de Dados (Redis/Postgres)
         self.historico = {} 
         self.system_prompt = """
@@ -59,9 +67,22 @@ class BurgerBrain:
             }
         ]
 
+    def _montar_prompt_gemini(self, historico: list[dict[str, str]]) -> str:
+        linhas = []
+        for msg in historico:
+            role = msg["role"]
+            content = msg["content"]
+            if role == "system":
+                linhas.append(f"SISTEMA: {content}")
+            elif role == "user":
+                linhas.append(f"CLIENTE: {content}")
+            elif role == "assistant":
+                linhas.append(f"ATENDENTE: {content}")
+        return "\n".join(linhas)
+
     def processar_mensagem(self, numero_cliente: str, mensagem_usuario: str) -> str:
-        if not self.client:
-            return ("⚠️ Configuração incompleta: defina a variável OPENAI_API_KEY "
+        if not self.client and not self.gemini_model:
+            return ("⚠️ Configuração incompleta: defina OPENAI_API_KEY ou GEMINI_API_KEY "
                     "no arquivo .env para ativar o atendimento automatizado.")
         # 1. Inicia histórico se não existir
         if numero_cliente not in self.historico:
@@ -70,6 +91,13 @@ class BurgerBrain:
         self.historico[numero_cliente].append({"role": "user", "content": mensagem_usuario})
 
         try:
+            if self.gemini_model:
+                prompt = self._montar_prompt_gemini(self.historico[numero_cliente])
+                response = self.gemini_model.generate_content(prompt)
+                resposta_texto = response.text
+                self.historico[numero_cliente].append({"role": "assistant", "content": resposta_texto})
+                return resposta_texto
+
             # 2. Primeira chamada a IA
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
