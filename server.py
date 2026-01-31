@@ -11,6 +11,10 @@ app = FastAPI(title="BurgerBot Server")
 # Instancia o cérebro uma única vez
 bot = BurgerBrain()
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "BurgerBot ativo. Use POST /sms para mensagens."}
+
 @app.post("/sms")
 async def reply_whatsapp(request: Request):
     content_type = request.headers.get("content-type", "")
